@@ -8,27 +8,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import com.example.bostatask.data.dto.CityDto
 import com.example.bostatask.repository.BostaRepository
-// UI States
 sealed class UiState {
     object Loading : UiState()
     data class Success(val cities: List<CityDto>) : UiState()
     data class Error(val message: String) : UiState()
 }
-
 class CitiesViewModel(private val repository: BostaRepository) : ViewModel() {
-
-    // Main state for API result
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
-
-    // UI state to manage expanded cities
     private val _expandedCities = mutableStateOf<Map<String, Boolean>>(emptyMap())
     val expandedCities: State<Map<String, Boolean>> = _expandedCities
 
     init {
         fetchCities()
     }
-
     private fun fetchCities() {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
